@@ -1,0 +1,2 @@
+# nuscripts
+Nushell scripts
