@@ -8,16 +8,8 @@
 #
 # ssh-sync itself only consumes the generic records returned by `ssh-sync-list`.
 #
-# `ssh-sync-list` return type:
-#
-# list<record<
-#     name: string,
-#     hostname: string,
-#     user: string,
-#     private_key: string,
-#     public_key: string,
-#     port?: int,
-# >>
+# `ssh-sync-list` returns a table of SSH entry records. Rows may also include
+# an optional `port` column when a Bitwarden item defines one.
 #
 # Example return value:
 #
@@ -43,7 +35,7 @@ def ssh-sync-bitwarden-require-command [name: string] {
 }
 
 def ssh-sync-bitwarden-secret-helper [] {
-    $nu.home-path | path join ".config" "nushell" "ssh-sync-keychain"
+    $nu.home-dir | path join ".config" "nushell" "ssh-sync-keychain"
 }
 
 def ssh-sync-bitwarden-run-command [command: list<string>] {
@@ -207,16 +199,9 @@ def ssh-sync-bitwarden-unlock [secret: string] {
     $session
 }
 
-# Return type:
-# list<record<
-#     name: string,
-#     hostname: string,
-#     user: string,
-#     private_key: string,
-#     public_key: string,
-#     port?: int,
-# >>
-def ssh-sync-list []: nothing -> list<record<name: string, hostname: string, user: string, private_key: string, public_key: string, port?: int>> {
+# Return type: table of SSH entry records. Rows may include an optional `port`
+# column; `ssh-sync.nu` reads it with `get -o` so rows without it remain valid.
+def ssh-sync-list []: nothing -> table<name: string, hostname: string, user: string, private_key: string, public_key: string> {
     ssh-sync-bitwarden-require-command bw
 
     let current_session = ($env.BW_SESSION? | default "" | str trim)
