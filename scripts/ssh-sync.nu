@@ -17,11 +17,11 @@ def ssh-sync-require-command [name: string] {
 }
 
 def ssh-sync-config-path [] {
-    $nu.home-path | path join ".config" "nushell" "ssh-sync.config.nu"
+    $nu.home-dir | path join ".config" "nushell" "ssh-sync.config.nu"
 }
 
 def ssh-sync-templates-dir [] {
-    $nu.home-path | path join ".config" "nushell" "ssh-sync-templates"
+    $nu.home-dir | path join ".config" "nushell" "ssh-sync-templates"
 }
 
 def ssh-sync-template-path [template: string] {
@@ -168,7 +168,7 @@ def --env ssh-sync [] {
 
     let entries = (ssh-sync-list)
 
-    let ssh_dir = ($nu.home-path | path join ".ssh")
+    let ssh_dir = ($nu.home-dir | path join ".ssh")
     let config_path = ($ssh_dir | path join "config")
     let tmp_dir = ($ssh_dir | path join $".ssh-sync.tmp.(random uuid)")
 
